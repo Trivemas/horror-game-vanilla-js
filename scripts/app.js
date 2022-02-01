@@ -19,12 +19,12 @@ class Player {
 		this.isMovingLeft = false;
 		this.isSneaking = false;
 		this.isRunning = false;
-		this.baseSpeed = 10;
+		this.baseSpeed = 3;
 
 		this.wireUpEvents();
 	}
 
-	update() {
+	update(elapsedTime) {
 		let speedMultiplier = 1;
 		if (this.isRunning && !this.isSneaking) {
 			speedMultiplier = 2;
@@ -99,13 +99,49 @@ class Player {
 	}
 }
 
-let player = new Player();
+class Enemy {
+	constructor() {
+		this.width = 32;
+		this.height = 32;
+		this.x = 0;
+		this.y = 0;
+		this.baseSpeed = 3;
+	}
 
-function gameloop() {
+	update(elapsedTime) {}
+
+	render() {
+		ctx.save();
+		ctx.fillStyle = "red";
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.restore();
+	}
+}
+let player = new Player();
+let e1 = new Enemy();
+
+let gameAssets = [player, e1];
+
+let currentTime = 0;
+
+function gameloop(timestamp) {
+	// console.log(timestamp);
 	ctx.clearRect(0, 0, canvas.width, canvas.height); /* clear canvas */
 
-	player.update();
-	player.render();
+	let elapsedTime = Math.floor(timestamp - currentTime);
+	currentTime = timestamp;
+
+	console.log(elapsedTime);
+	gameAssets.forEach((asset) => {
+		asset.update();
+		asset.render();
+	});
+
+	// player.update();
+	// player.render();
+
+	// e1.update();
+	// e1.render();
 
 	requestAnimationFrame(gameloop);
 }
