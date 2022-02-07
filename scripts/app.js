@@ -169,10 +169,47 @@ class Enemy {
 		ctx.restore();
 	};
 }
-let player = new Player();
-let e1 = new Enemy();
 
-let gameAssets = [player, e1];
+class Barrier {
+	constructor(x, y, w, h) {
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
+	}
+
+	update(elapsedTime) {
+
+	}
+
+	render() {
+		ctx.save();
+		ctx.fillStyle = 'black';
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.restore();
+	};
+}
+
+class Game {
+	/**
+	 * @param {(Barrier | Player | Enemy)[]} gameAssets
+	 */
+	constructor(gameAssets) {
+		this.gameAssets = gameAssets;
+	}
+
+	collisions() {
+		this.gameAssets.forEach(a => {
+			console.log(typeof a)
+		});
+	}
+}
+let b1 = new Barrier(600, 300, 32, 32 * 3)
+let game = new Game(gameAssets);
+let barriers = [b1];
+let player = new Player(barriers);
+let e1 = new Enemy(barriers);
+let gameAssets = [player, e1, ...barriers];
 
 let currentTime = 0;
 
@@ -186,13 +223,16 @@ function gameloop(timestamp) {
 	let elapsedTime = Math.floor(timestamp - currentTime);
 	currentTime = timestamp;
 
-	enemyTime += elapsedTime;
-	if(enemyTime >= enemySpawnRate) {
-		gameAssets.push(new Enemy());
-		enemyTime = 0;
-	}
+	// enemyTime += elapsedTime;
+	// if(enemyTime >= enemySpawnRate) {
+	// 	gameAssets.push(new Enemy());
+	// 	enemyTime = 0;
+	// }
 
 	// console.log(elapsedTime);
+
+	game.collisions();
+
 	gameAssets.forEach((asset) => {
 		asset.update(elapsedTime);
 		asset.render();
